@@ -3,10 +3,13 @@
 {% block body %}
     <h1 class="flex items-center gap-2 mb-4">
         {{ submission.form.name }}
-        {% include '@ForumifyPerscomPlugin/frontend/roster/components/status.html.twig' with {
-            status: submission.statuses[0],
-            class: 'text-small'
-        } only %}
+        {% set status = submission.statuses|first %}
+        {% if status %}
+            {% include '@ForumifyPerscomPlugin/frontend/roster/components/status.html.twig' with {
+                status: submission.statuses[0],
+                class: 'text-small'
+            } only %}
+        {% endif %}
     </h1>
     <div class="flex gap-4">
         <div class="w-50">
@@ -29,7 +32,7 @@
             {% for status in submission.statuses %}
                 <li class="box mb-2">
                     <h4>{{ status.name }}</h4>
-                    <p class="text-small mb-2">{{ 'date'|trans({ date: status.record.updated_at|perscom_date }) }}</p>
+                    <p class="text-small mb-2">{{ status.record.updated_at|perscom_date|format_date }}</p>
                     <p>
                         {{ status.record.text }}
                     </p>

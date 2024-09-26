@@ -11,10 +11,13 @@
                         <div class="mb-4">
                             <h2>
                                 {{ item.form.name }}
-                                {% include '@ForumifyPerscomPlugin/frontend/roster/components/status.html.twig' with {
-                                    status: item.statuses[0],
-                                    class: 'text-small'
-                                } only %}
+                                {% set status = item.statuses|first %}
+                                {% if status %}
+                                    {% include '@ForumifyPerscomPlugin/frontend/roster/components/status.html.twig' with {
+                                        status: item.statuses[0],
+                                        class: 'text-small'
+                                    } only %}
+                                {% endif %}
                             </h2>
                             {% include '@ForumifyPerscomPlugin/components/submission.html.twig' with {
                                 submission: item
@@ -25,7 +28,7 @@
                             {% for status in item.statuses|sort((a, b) => b.updated_at <=> a.updated_at) %}
                                 <li class="mb-2">
                                     <h4 class="mb-0">{{ status.name }}</h4>
-                                    <p class="text-small mb-2">{{ 'date'|trans({ date: status.record.updated_at|perscom_date }) }}</p>
+                                    <p class="text-small mb-2">{{ status.record.updated_at|perscom_date|format_date }}</p>
                                     <p>
                                         {{ status.record.text }}
                                     </p>
@@ -35,9 +38,7 @@
                     </div>
                 {% endblock %}
             {% endembed %}
-            <p class="text-small">
-                {{ 'date_time_short'|trans({ date: item.created_at }) }}
-            </p>
+            <p class="text-small">{{ item.created_at|format_date }}</p>
         </div>
         {% set status = item.statuses|first %}
         {% if status %}
